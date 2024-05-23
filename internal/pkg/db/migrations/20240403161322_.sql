@@ -1,18 +1,16 @@
 -- +goose Up
 -- +goose StatementBegin
-create table infsys
+create table listinfsys
 (
-    id                  BIGINT PRIMARY KEY NOT NULL,
-    name                TEXT               NOT NULL DEFAULT '',
-    owner               TEXT               NOT NULL DEFAULT '',
-    vms                 TEXT               NOT NULL DEFAULT '',
-    softwareUsed        TEXT               NOT NULL DEFAULT '',
-    resourceAssignment  TEXT               NOT NULL DEFAULT '',
-    status              BOOLEAN            NOT NULL DEFAULT FALSE
+    id       BIGSERIAL PRIMARY KEY NOT NULL,
+    name     TEXT                  NOT NULL DEFAULT '',
+    owner    TEXT                  NOT NULL DEFAULT '',
+    admin    TEXT                  NOT NULL DEFAULT '',
+    contacts TEXT                  NOT NULL DEFAULT ''
 );
 -- +goose StatementEnd
 
 -- +goose Down
 -- +goose StatementBegin
-drop table infsys;
+drop table listinfsys;
 -- +goose StatementEnd

@@ -29,7 +29,18 @@ func UpdateISInfo(service StoragePVZ) http.Handler {
 			return
 		}
 
+		pvzInfo, err := service.GetInfoIS(req.Context(), keyInt)
+		if err != nil {
+			if errors.Is(err, model.ErrObjectNotFound) {
+				w.WriteHeader(http.StatusNotFound)
+				return
+			}
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+
 		var unm model.TableInfSystems
+		unm = *pvzInfo
 		if err = json.Unmarshal(body, &unm); err != nil {
 			fmt.Println(err)
 			w.WriteHeader(http.StatusInternalServerError)
@@ -39,7 +50,13 @@ func UpdateISInfo(service StoragePVZ) http.Handler {
 			Name:               unm.Name,
 			Owner:              unm.Owner,
 			Vms:                unm.Vms,
+			Cpu:                unm.Cpu,
+			Ram:                unm.Ram,
+			Hdd:                unm.Hdd,
 			SoftwareUsed:       unm.SoftwareUsed,
+			AdminName:          unm.AdminName,
+			AdminEmail:         unm.AdminEmail,
+			AdminTg:            unm.AdminTg,
 			ResourceAssignment: unm.ResourceAssignment,
 			Status:             unm.Status,
 		}
@@ -58,7 +75,13 @@ func UpdateISInfo(service StoragePVZ) http.Handler {
 			Name:               unm.Name,
 			Owner:              unm.Owner,
 			Vms:                unm.Vms,
+			Cpu:                unm.Cpu,
+			Ram:                unm.Ram,
+			Hdd:                unm.Hdd,
 			SoftwareUsed:       unm.SoftwareUsed,
+			AdminName:          unm.AdminName,
+			AdminEmail:         unm.AdminEmail,
+			AdminTg:            unm.AdminTg,
 			ResourceAssignment: unm.ResourceAssignment,
 			Status:             unm.Status,
 		}
