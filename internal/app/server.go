@@ -82,11 +82,5 @@ func createRouter(implementation handlers.StoragePVZ) *mux.Router {
 	router.Handle(fmt.Sprintf("/{%s:[0-9]+}/info", handlers.QueryParamKey), handlers.GetISTable(implementation)).Methods("GET")
 	router.Handle(fmt.Sprintf("/{%s:[0-9]+}/info", handlers.QueryParamKey), handlers.AddISInfo(implementation)).Methods("POST")
 	router.Handle(fmt.Sprintf("/{%s:[0-9]+}/info", handlers.QueryParamKey), handlers.UpdateISInfo(implementation)).Methods("PUT")
-	//router.Handle(fmt.Sprintf("/{%s:[0-9]+}/info/res", handlers.QueryParamKey), handlers.AddRes(implementation)).Methods("POST")
-	//router.Handle(fmt.Sprintf("/{%s:[0-9]+}/info/res", handlers.QueryParamKey), handlers.GetRes(implementation)).Methods("GET")
-	//router.Handle(fmt.Sprintf("/{%s:[0-9]+}/info/res", handlers.QueryParamKey), handlers.UpdateRes(implementation)).Methods("PUT")
-	//router.Handle(fmt.Sprintf("/{%s:[0-9]+}/info/adm", handlers.QueryParamKey), handlers.AddAdm(implementation)).Methods("POST")
-	//router.Handle(fmt.Sprintf("/{%s:[0-9]+}/info/adm", handlers.QueryParamKey), handlers.GetAdm(implementation)).Methods("GET")
-	//router.Handle(fmt.Sprintf("/{%s:[0-9]+}/info/adm", handlers.QueryParamKey), handlers.UpdateAdm(implementation)).Methods("PUT")
 	return router
 }

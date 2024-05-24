@@ -1,6 +1,6 @@
 {
-  "AUTH_PASSWORD": "1234",
-  "AUTH_USERNAME": "insaf",
+  "AUTH_PASSWORD": "admin",
+  "AUTH_USERNAME": "admin",
   "DB_HOST": "localhost",
   "DB_NAME": "test",
   "DB_PASSWORD": "test",

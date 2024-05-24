@@ -29,7 +29,22 @@ func Update(service StoragePVZ) http.Handler {
 			return
 		}
 
-		var unm model.ListInfSysRequest
+		pvzInfo, err := service.GetInfo(req.Context(), keyInt)
+		if err != nil {
+			if errors.Is(err, model.ErrObjectNotFound) {
+				w.WriteHeader(http.StatusNotFound)
+				return
+			}
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+
+		unm := &model.ListInfSysRequest{
+			Name:     pvzInfo.Name,
+			Owner:    pvzInfo.Owner,
+			Admin:    pvzInfo.Admin,
+			Contacts: pvzInfo.Contacts,
+		}
 		if err = json.Unmarshal(body, &unm); err != nil {
 			fmt.Println(err)
 			w.WriteHeader(http.StatusInternalServerError)
