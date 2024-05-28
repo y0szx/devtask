@@ -5,7 +5,7 @@ import (
 	"devtask/internal/app/handlers"
 	"devtask/internal/app/middleware"
 	"devtask/internal/config"
-	"devtask/internal/service/pvz"
+	"devtask/internal/service/info"
 	"errors"
 	"fmt"
 	"github.com/gorilla/mux"
@@ -18,13 +18,11 @@ import (
 
 const unsecurePort = ":9000"
 
-//const securePort = ":9001"
-
 type server struct {
-	repo handlers.StoragePVZ
+	repo handlers.StorageInfo
 }
 
-func RunHTTP(_ context.Context, service *pvz.Service, auth config.AuthInfo) {
+func RunHTTP(_ context.Context, service *info.Service, auth config.AuthInfo) {
 	implementation := server{repo: service}
 
 	quit := make(chan os.Signal, 1)
@@ -37,17 +35,6 @@ func RunHTTP(_ context.Context, service *pvz.Service, auth config.AuthInfo) {
 		Addr:    unsecurePort,
 		Handler: handler,
 	}
-
-	//secureServer := &http.Server{
-	//	Addr:    securePort,
-	//	Handler: handler,
-	//}
-
-	//go func() {
-	//	if err := secureServer.ListenAndServeTLS("server.crt", "server.key"); err != nil && !errors.Is(err, http.ErrServerClosed) {
-	//		log.Fatal(err, " secure")
-	//	}
-	//}()
 
 	go func() {
 		if err := unsecureServer.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
@@ -64,15 +51,10 @@ func RunHTTP(_ context.Context, service *pvz.Service, auth config.AuthInfo) {
 		log.Fatal(err, unsecureServer)
 	}
 
-	//err = secureServer.Shutdown(context.Background())
-	//if err != nil {
-	//	log.Fatal(err, unsecureServer)
-	//}
-
 	fmt.Println("Работа сервера завершена!")
 }
 
-func createRouter(implementation handlers.StoragePVZ) *mux.Router {
+func createRouter(implementation handlers.StorageInfo) *mux.Router {
 	router := mux.NewRouter()
 	router.Handle("/", handlers.Create(implementation)).Methods("POST")
 	router.Handle("/", handlers.List(implementation)).Methods("GET")

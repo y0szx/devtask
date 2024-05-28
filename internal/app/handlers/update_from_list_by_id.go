@@ -11,7 +11,7 @@ import (
 	"strconv"
 )
 
-func Update(service StoragePVZ) http.Handler {
+func Update(service StorageInfo) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
 		body, err := io.ReadAll(req.Body)
 		if err != nil {
@@ -29,7 +29,7 @@ func Update(service StoragePVZ) http.Handler {
 			return
 		}
 
-		pvzInfo, err := service.GetInfo(req.Context(), keyInt)
+		sysInfo, err := service.GetInfo(req.Context(), keyInt)
 		if err != nil {
 			if errors.Is(err, model.ErrObjectNotFound) {
 				w.WriteHeader(http.StatusNotFound)
@@ -40,23 +40,23 @@ func Update(service StoragePVZ) http.Handler {
 		}
 
 		unm := &model.ListInfSysRequest{
-			Name:     pvzInfo.Name,
-			Owner:    pvzInfo.Owner,
-			Admin:    pvzInfo.Admin,
-			Contacts: pvzInfo.Contacts,
+			Name:     sysInfo.Name,
+			Owner:    sysInfo.Owner,
+			Admin:    sysInfo.Admin,
+			Contacts: sysInfo.Contacts,
 		}
 		if err = json.Unmarshal(body, &unm); err != nil {
 			fmt.Println(err)
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
-		pvzRepo := &model.ListInfSys{
+		infRepo := &model.ListInfSys{
 			Name:     unm.Name,
 			Owner:    unm.Owner,
 			Admin:    unm.Admin,
 			Contacts: unm.Contacts,
 		}
-		id, err := service.UpdateInfo(req.Context(), pvzRepo, keyInt)
+		id, err := service.UpdateInfo(req.Context(), infRepo, keyInt)
 		if err != nil {
 			if errors.Is(err, model.ErrNoRowsInResultSet) {
 				w.WriteHeader(http.StatusNotFound)
@@ -68,13 +68,13 @@ func Update(service StoragePVZ) http.Handler {
 
 		resp := &model.ListInfSys{
 			ID:       id,
-			Name:     pvzRepo.Name,
-			Owner:    pvzRepo.Owner,
-			Admin:    pvzRepo.Admin,
-			Contacts: pvzRepo.Contacts,
+			Name:     infRepo.Name,
+			Owner:    infRepo.Owner,
+			Admin:    infRepo.Admin,
+			Contacts: infRepo.Contacts,
 		}
-		pvzJson, _ := json.Marshal(resp)
-		_, err = w.Write(pvzJson)
+		infJson, _ := json.Marshal(resp)
+		_, err = w.Write(infJson)
 		if err != nil {
 			return
 		}

@@ -11,7 +11,7 @@ import (
 	"strconv"
 )
 
-func UpdateISInfo(service StoragePVZ) http.Handler {
+func UpdateISInfo(service StorageInfo) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
 		body, err := io.ReadAll(req.Body)
 		if err != nil {
@@ -29,7 +29,7 @@ func UpdateISInfo(service StoragePVZ) http.Handler {
 			return
 		}
 
-		pvzInfo, err := service.GetInfoIS(req.Context(), keyInt)
+		sysInfo, err := service.GetInfoIS(req.Context(), keyInt)
 		if err != nil {
 			if errors.Is(err, model.ErrObjectNotFound) {
 				w.WriteHeader(http.StatusNotFound)
@@ -40,13 +40,13 @@ func UpdateISInfo(service StoragePVZ) http.Handler {
 		}
 
 		var unm model.TableInfSystems
-		unm = *pvzInfo
+		unm = *sysInfo
 		if err = json.Unmarshal(body, &unm); err != nil {
 			fmt.Println(err)
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
-		pvzRepo := &model.TableInfSystems{
+		infRepo := &model.TableInfSystems{
 			Name:               unm.Name,
 			Owner:              unm.Owner,
 			Vms:                unm.Vms,
@@ -60,7 +60,7 @@ func UpdateISInfo(service StoragePVZ) http.Handler {
 			ResourceAssignment: unm.ResourceAssignment,
 			Status:             unm.Status,
 		}
-		id, err := service.UpdateInfoIS(req.Context(), pvzRepo, keyInt)
+		id, err := service.UpdateInfoIS(req.Context(), infRepo, keyInt)
 		if err != nil {
 			if errors.Is(err, model.ErrNoRowsInResultSet) {
 				w.WriteHeader(http.StatusNotFound)
@@ -85,8 +85,8 @@ func UpdateISInfo(service StoragePVZ) http.Handler {
 			ResourceAssignment: unm.ResourceAssignment,
 			Status:             unm.Status,
 		}
-		pvzJson, _ := json.Marshal(resp)
-		_, err = w.Write(pvzJson)
+		infJson, _ := json.Marshal(resp)
+		_, err = w.Write(infJson)
 		if err != nil {
 			return
 		}

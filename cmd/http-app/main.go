@@ -5,7 +5,7 @@ import (
 	"devtask/internal/app"
 	"devtask/internal/config"
 	"devtask/internal/pkg/db"
-	"devtask/internal/service/pvz"
+	"devtask/internal/service/info"
 	"devtask/internal/storage/postgres"
 	"log"
 )
@@ -21,10 +21,10 @@ func main() {
 
 	defer database.GetPool(ctx).Close()
 
-	pvzsRepo := postgres.NewPVZs(database)
-	pvzService := pvz.NewService(pvzsRepo)
+	infoRepo := postgres.NewInfo(database)
+	infoService := info.NewService(infoRepo)
 
 	auth, _, err := config.Read()
 
-	app.RunHTTP(ctx, pvzService, auth)
+	app.RunHTTP(ctx, infoService, auth)
 }

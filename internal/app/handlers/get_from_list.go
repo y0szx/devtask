@@ -9,7 +9,7 @@ import (
 	"strconv"
 )
 
-func GetByID(service StoragePVZ) http.Handler {
+func GetByID(service StorageInfo) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
 		key, ok := mux.Vars(req)[QueryParamKey]
 		if !ok {
@@ -22,7 +22,7 @@ func GetByID(service StoragePVZ) http.Handler {
 			return
 		}
 
-		pvzInfo, err := service.GetInfo(req.Context(), keyInt)
+		sysInfo, err := service.GetInfo(req.Context(), keyInt)
 		if err != nil {
 			if errors.Is(err, model.ErrObjectNotFound) {
 				w.WriteHeader(http.StatusNotFound)
@@ -31,8 +31,8 @@ func GetByID(service StoragePVZ) http.Handler {
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
-		pvzJson, _ := json.Marshal(pvzInfo)
-		_, err = w.Write(pvzJson)
+		infJson, _ := json.Marshal(sysInfo)
+		_, err = w.Write(infJson)
 		if err != nil {
 			return
 		}

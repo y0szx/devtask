@@ -4,20 +4,34 @@ import (
 	"devtask/internal/model"
 	"encoding/json"
 	"fmt"
+	"github.com/gorilla/mux"
 	"net/http"
+	"strconv"
 )
 
-func AddISInfo(service StoragePVZ) http.Handler {
+func AddISInfo(service StorageInfo) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
-		var unm model.TableInfSystems
-		err := json.NewDecoder(req.Body).Decode(&unm)
+
+		key, ok := mux.Vars(req)[QueryParamKey]
+		if !ok {
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
+		keyInt, err := strconv.ParseInt(key, 10, 64)
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
 			return
 		}
 
-		pvzRepo := &model.TableInfSystems{
-			ID:                 unm.ID,
+		var unm model.TableInfSystems
+		err = json.NewDecoder(req.Body).Decode(&unm)
+		if err != nil {
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
+
+		infRepo := &model.TableInfSystems{
+			ID:                 keyInt,
 			Name:               unm.Name,
 			Owner:              unm.Owner,
 			Vms:                unm.Vms,
@@ -31,7 +45,7 @@ func AddISInfo(service StoragePVZ) http.Handler {
 			ResourceAssignment: unm.ResourceAssignment,
 			Status:             unm.Status,
 		}
-		id, err := service.AddInfoIS(req.Context(), *pvzRepo)
+		id, err := service.AddInfoIS(req.Context(), *infRepo)
 		fmt.Println(id, err)
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
@@ -53,8 +67,8 @@ func AddISInfo(service StoragePVZ) http.Handler {
 			ResourceAssignment: unm.ResourceAssignment,
 			Status:             unm.Status,
 		}
-		pvzJson, _ := json.Marshal(resp)
-		_, err = w.Write(pvzJson)
+		infJson, _ := json.Marshal(resp)
+		_, err = w.Write(infJson)
 		if err != nil {
 			return
 		}

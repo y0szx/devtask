@@ -8,7 +8,7 @@ import (
 	"strconv"
 )
 
-func Delete(service StoragePVZ) http.Handler {
+func Delete(service StorageInfo) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
 		key, ok := mux.Vars(req)[QueryParamKey]
 		if !ok {

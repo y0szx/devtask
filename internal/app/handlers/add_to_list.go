@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-func Create(service StoragePVZ) http.Handler {
+func Create(service StorageInfo) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
 		var unm model.ListInfSysRequest
 		err := json.NewDecoder(req.Body).Decode(&unm)
@@ -15,13 +15,13 @@ func Create(service StoragePVZ) http.Handler {
 			return
 		}
 
-		pvzRepo := &model.ListInfSys{
+		infRepo := &model.ListInfSys{
 			Name:     unm.Name,
 			Owner:    unm.Owner,
 			Admin:    unm.Admin,
 			Contacts: unm.Contacts,
 		}
-		id, err := service.AddInfo(req.Context(), *pvzRepo)
+		id, err := service.AddInfo(req.Context(), *infRepo)
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 			return
@@ -29,13 +29,13 @@ func Create(service StoragePVZ) http.Handler {
 
 		resp := &model.ListInfSys{
 			ID:       id,
-			Name:     pvzRepo.Name,
-			Owner:    pvzRepo.Owner,
-			Admin:    pvzRepo.Admin,
-			Contacts: pvzRepo.Contacts,
+			Name:     infRepo.Name,
+			Owner:    infRepo.Owner,
+			Admin:    infRepo.Admin,
+			Contacts: infRepo.Contacts,
 		}
-		pvzJson, _ := json.Marshal(resp)
-		_, err = w.Write(pvzJson)
+		infJson, _ := json.Marshal(resp)
+		_, err = w.Write(infJson)
 		if err != nil {
 			return
 		}
