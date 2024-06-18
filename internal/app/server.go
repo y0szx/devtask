@@ -64,5 +64,7 @@ func createRouter(implementation handlers.StorageInfo) *mux.Router {
 	router.Handle(fmt.Sprintf("/{%s:[0-9]+}/info", handlers.QueryParamKey), handlers.GetISTable(implementation)).Methods("GET")
 	router.Handle(fmt.Sprintf("/{%s:[0-9]+}/info", handlers.QueryParamKey), handlers.AddISInfo(implementation)).Methods("POST")
 	router.Handle(fmt.Sprintf("/{%s:[0-9]+}/info", handlers.QueryParamKey), handlers.UpdateISInfo(implementation)).Methods("PUT")
+	router.Handle(fmt.Sprintf("/{%s:[0-9]+}/imgs", handlers.QueryParamKey), handlers.GetImage(implementation)).Methods("GET")
+	router.Handle(fmt.Sprintf("/{%s:[0-9]+}/imgs", handlers.QueryParamKey), handlers.AddImage(implementation)).Methods("POST")
 	return router
 }

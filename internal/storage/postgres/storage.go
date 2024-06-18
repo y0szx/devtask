@@ -34,7 +34,7 @@ func (r *InfRepo) UpdateInList(ctx context.Context, inf *model.ListInfSys, id in
 
 func (r *InfRepo) GetFromList(ctx context.Context, id int64) (*model.ListInfSys, error) {
 	var a model.ListInfSys
-	err := r.db.Get(ctx, &a, `SELECT id,name,owner,admin,contacts FROM listinfsys where id=$1`, id)
+	err := r.db.Get(ctx, &a, `SELECT id,name,owner,admin,contacts FROM listinfsys WHERE id=$1`, id)
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
 			return nil, model.ErrObjectNotFound
@@ -76,7 +76,7 @@ func (r *InfRepo) List(ctx context.Context) ([]model.ListInfSys, error) {
 
 func (r *InfRepo) GetISTable(ctx context.Context, id int64) (*model.TableInfSystems, error) {
 	var a model.TableInfSystems
-	err := r.db.Get(ctx, &a, `SELECT id,name,owner,vms,cpu,ram,hdd,software_used,admin_name,admin_email,admin_tg,resource_assignment,status FROM infsys where id=$1`, id)
+	err := r.db.Get(ctx, &a, `SELECT id,name,owner,vms,cpu,ram,hdd,software_used,admin_name,admin_email,admin_tg,resource_assignment,status FROM infsys WHERE id=$1`, id)
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
 			return nil, model.ErrObjectNotFound
@@ -99,4 +99,22 @@ func (r *InfRepo) UpdateISInfo(ctx context.Context, inf *model.TableInfSystems, 
 		return 0, model.ErrNoRowsInResultSet
 	}
 	return id, err
+}
+
+func (r *InfRepo) AddImage(ctx context.Context, inf *model.Images) (int64, error) {
+	var image_id int64
+	err := r.db.ExecQueryRow(ctx, `INSERT INTO images(id,image_data,image_name) VALUES ($1,$2, $3) RETURNING image_id;`, inf.ID, inf.ImageData, inf.ImageName).Scan(&image_id)
+	return image_id, err
+}
+
+func (r *InfRepo) GetImage(ctx context.Context, id int64) ([]model.Images, error) {
+	var a []model.Images
+	err := r.db.Select(ctx, &a, `SELECT image_id, id, image_data,image_name FROM images WHERE id=$1`, id)
+	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, model.ErrObjectNotFound
+		}
+		return nil, err
+	}
+	return a, nil
 }

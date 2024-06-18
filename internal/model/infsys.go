@@ -37,3 +37,10 @@ type TableInfSystems struct {
 	ResourceAssignment string `db:"resource_assignment"`
 	Status             bool   `db:"status"`
 }
+
+type Images struct {
+	ImageID   int64  `db:"image_id"`
+	ID        int64  `db:"id"`
+	ImageData []byte `db:"image_data"`
+	ImageName string `db:"image_name"`
+}
