@@ -44,3 +44,9 @@ type Images struct {
 	ImageData []byte `db:"image_data"`
 	ImageName string `db:"image_name"`
 }
+
+type Documents struct {
+	ID      int64  `db:"id"`
+	DocData []byte `db:"doc_data"`
+	DocName string `db:"doc_name"`
+}

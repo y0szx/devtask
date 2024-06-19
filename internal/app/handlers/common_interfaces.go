@@ -18,4 +18,6 @@ type StorageInfo interface {
 	UpdateInfoIS(ctx context.Context, info *model.TableInfSystems, id int64) (int64, error)
 	AddImg(ctx context.Context, info model.Images) (int64, error)
 	GetImg(ctx context.Context, id int64) ([]model.Images, error)
+	AddDoc(ctx context.Context, info model.Documents) (int64, error)
+	GetDocs(ctx context.Context, id int64) ([]model.Documents, error)
 }

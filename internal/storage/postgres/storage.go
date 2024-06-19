@@ -107,9 +107,27 @@ func (r *InfRepo) AddImage(ctx context.Context, inf *model.Images) (int64, error
 	return image_id, err
 }
 
-func (r *InfRepo) GetImage(ctx context.Context, id int64) ([]model.Images, error) {
+func (r *InfRepo) GetImages(ctx context.Context, id int64) ([]model.Images, error) {
 	var a []model.Images
 	err := r.db.Select(ctx, &a, `SELECT image_id, id, image_data,image_name FROM images WHERE id=$1`, id)
+	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, model.ErrObjectNotFound
+		}
+		return nil, err
+	}
+	return a, nil
+}
+
+func (r *InfRepo) AddDocument(ctx context.Context, inf *model.Documents) (int64, error) {
+	var id int64
+	err := r.db.ExecQueryRow(ctx, `INSERT INTO docs(id,doc_data,doc_name) VALUES ($1,$2, $3) RETURNING id;`, inf.ID, inf.DocData, inf.DocName).Scan(&id)
+	return id, err
+}
+
+func (r *InfRepo) GetDocuments(ctx context.Context, id int64) ([]model.Documents, error) {
+	var a []model.Documents
+	err := r.db.Select(ctx, &a, `SELECT id,doc_data,doc_name FROM docs WHERE id=$1`, id)
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
 			return nil, model.ErrObjectNotFound

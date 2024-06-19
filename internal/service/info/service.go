@@ -16,7 +16,9 @@ type storageInfo interface {
 	AddISInfo(ctx context.Context, info *model.TableInfSystems) (int64, error)
 	UpdateISInfo(ctx context.Context, info *model.TableInfSystems, id int64) (int64, error)
 	AddImage(ctx context.Context, info *model.Images) (int64, error)
-	GetImage(ctx context.Context, id int64) ([]model.Images, error)
+	GetImages(ctx context.Context, id int64) ([]model.Images, error)
+	AddDocument(ctx context.Context, info *model.Documents) (int64, error)
+	GetDocuments(ctx context.Context, id int64) ([]model.Documents, error)
 }
 
 type Service struct {
@@ -72,12 +74,23 @@ func (s Service) UpdateInfoIS(ctx context.Context, inf *model.TableInfSystems, i
 }
 
 func (s Service) GetImg(ctx context.Context, id int64) ([]model.Images, error) {
-	inf, err := s.storage.GetImage(ctx, id)
+	inf, err := s.storage.GetImages(ctx, id)
 	fmt.Println(err)
 	return inf, err
 }
 
 func (s Service) AddImg(ctx context.Context, inf model.Images) (int64, error) {
 	id, err := s.storage.AddImage(ctx, &inf)
+	return id, err
+}
+
+func (s Service) GetDocs(ctx context.Context, id int64) ([]model.Documents, error) {
+	inf, err := s.storage.GetDocuments(ctx, id)
+	fmt.Println(err)
+	return inf, err
+}
+
+func (s Service) AddDoc(ctx context.Context, inf model.Documents) (int64, error) {
+	id, err := s.storage.AddDocument(ctx, &inf)
 	return id, err
 }
