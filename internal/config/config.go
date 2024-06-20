@@ -6,11 +6,13 @@ import (
 	"os"
 )
 
+// AuthInfo represents the authentication information from the config file
 type AuthInfo struct {
 	Password string `json:"AUTH_PASSWORD"`
 	Username string `json:"AUTH_USERNAME"`
 }
 
+// DbInfo represents the database connection information from the config file
 type DbInfo struct {
 	Host     string `json:"DB_HOST"`
 	Name     string `json:"DB_NAME"`
@@ -19,6 +21,7 @@ type DbInfo struct {
 	User     string `json:"DB_USER"`
 }
 
+// Read reads and parses the configuration file and returns AuthInfo and DbInfo structs
 func Read() (AuthInfo, DbInfo, error) {
 	file, err := os.Open("config/config.json")
 	if err != nil {
@@ -32,6 +35,7 @@ func Read() (AuthInfo, DbInfo, error) {
 		}
 	}(file)
 
+	// Decode AuthInfo from the configuration file
 	var auth AuthInfo
 	decoder := json.NewDecoder(file)
 	err = decoder.Decode(&auth)
@@ -40,12 +44,14 @@ func Read() (AuthInfo, DbInfo, error) {
 		return AuthInfo{}, DbInfo{}, err
 	}
 
+	// Reset file pointer to the beginning
 	_, err = file.Seek(0, 0)
 	if err != nil {
 		fmt.Println("Error seeking file:", err)
 		return AuthInfo{}, DbInfo{}, err
 	}
 
+	// Decode DbInfo from the configuration file
 	var db DbInfo
 	err = decoder.Decode(&db)
 	if err != nil {

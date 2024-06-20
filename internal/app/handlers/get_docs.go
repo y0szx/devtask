@@ -9,8 +9,10 @@ import (
 	"strconv"
 )
 
+// GetImage returns an HTTP handler that retrieves images associated with a specific entity.
 func GetImage(service StorageInfo) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
+		// Extract key from URL path parameters
 		key, ok := mux.Vars(req)[QueryParamKey]
 		if !ok {
 			w.WriteHeader(http.StatusBadRequest)
@@ -22,8 +24,10 @@ func GetImage(service StorageInfo) http.Handler {
 			return
 		}
 
-		sysInfo, err := service.GetImg(req.Context(), keyInt)
+		// Retrieve image information using the service
+		imgInfo, err := service.GetImg(req.Context(), keyInt)
 		if err != nil {
+			// Handle specific error cases
 			if errors.Is(err, model.ErrObjectNotFound) {
 				w.WriteHeader(http.StatusNotFound)
 				return
@@ -31,7 +35,9 @@ func GetImage(service StorageInfo) http.Handler {
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
-		infJson, _ := json.Marshal(sysInfo)
+
+		// Serialize the image information to JSON
+		infJson, _ := json.Marshal(imgInfo)
 		_, err = w.Write(infJson)
 		if err != nil {
 			return

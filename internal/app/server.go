@@ -18,34 +18,42 @@ import (
 
 const unsecurePort = ":9000"
 
+// server struct holds the repository interface for handlers
 type server struct {
 	repo handlers.StorageInfo
 }
 
+// RunHTTP initializes and starts the HTTP server
 func RunHTTP(_ context.Context, service *info.Service, auth config.AuthInfo) {
 	implementation := server{repo: service}
 
+	// Channel to listen for termination signals
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, syscall.SIGTERM, syscall.SIGINT)
 
+	// Create and configure the router
 	router := createRouter(implementation.repo)
 	handler := middleware.BasicAuth(middleware.Logger(router), auth.Username, auth.Password)
 
+	// Create and configure the HTTP server
 	unsecureServer := &http.Server{
 		Addr:    unsecurePort,
 		Handler: handler,
 	}
 
+	// Goroutine to start the server
 	go func() {
 		if err := unsecureServer.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
 			log.Fatal(err, " unsecure")
 		}
 	}()
 
+	// Wait for termination signal
 	<-quit
 
 	fmt.Println("Завершение работы сервера!")
 
+	// Gracefully shutdown the server
 	err := unsecureServer.Shutdown(context.Background())
 	if err != nil {
 		log.Fatal(err, unsecureServer)
@@ -54,6 +62,7 @@ func RunHTTP(_ context.Context, service *info.Service, auth config.AuthInfo) {
 	fmt.Println("Работа сервера завершена!")
 }
 
+// createRouter initializes the HTTP router with appropriate routes and handlers
 func createRouter(implementation handlers.StorageInfo) *mux.Router {
 	router := mux.NewRouter()
 	router.Handle("/", handlers.Create(implementation)).Methods("POST")

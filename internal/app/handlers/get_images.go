@@ -9,8 +9,10 @@ import (
 	"strconv"
 )
 
+// GetDocuments returns an HTTP handler that retrieves documents by ID.
 func GetDocuments(service StorageInfo) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
+		// Extract key from URL path parameters
 		key, ok := mux.Vars(req)[QueryParamKey]
 		if !ok {
 			w.WriteHeader(http.StatusBadRequest)
@@ -22,8 +24,10 @@ func GetDocuments(service StorageInfo) http.Handler {
 			return
 		}
 
-		sysInfo, err := service.GetDocs(req.Context(), keyInt)
+		// Retrieve documents by ID using the service
+		documents, err := service.GetDocs(req.Context(), keyInt)
 		if err != nil {
+			// Handle specific error cases
 			if errors.Is(err, model.ErrObjectNotFound) {
 				w.WriteHeader(http.StatusNotFound)
 				return
@@ -31,7 +35,9 @@ func GetDocuments(service StorageInfo) http.Handler {
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
-		infJson, _ := json.Marshal(sysInfo)
+
+		// Serialize the documents to JSON
+		infJson, _ := json.Marshal(documents)
 		_, err = w.Write(infJson)
 		if err != nil {
 			return

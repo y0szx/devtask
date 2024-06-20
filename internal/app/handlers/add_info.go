@@ -9,6 +9,8 @@ import (
 	"strconv"
 )
 
+// AddISInfo handles HTTP requests to add information about information systems (IS) to the storage service.
+// It expects an IS information JSON payload in the request body and uses the provided service to add the IS information.
 func AddISInfo(service StorageInfo) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
 
@@ -23,6 +25,7 @@ func AddISInfo(service StorageInfo) http.Handler {
 			return
 		}
 
+		// Decode the request body into a model.TableInfSystems struct
 		var unm model.TableInfSystems
 		err = json.NewDecoder(req.Body).Decode(&unm)
 		if err != nil {
@@ -30,6 +33,7 @@ func AddISInfo(service StorageInfo) http.Handler {
 			return
 		}
 
+		// Create a model.TableInfSystems object with the parsed ID and decoded data
 		infRepo := &model.TableInfSystems{
 			ID:                 keyInt,
 			Name:               unm.Name,
@@ -45,6 +49,8 @@ func AddISInfo(service StorageInfo) http.Handler {
 			ResourceAssignment: unm.ResourceAssignment,
 			Status:             unm.Status,
 		}
+
+		// Call the service to add the IS information
 		id, err := service.AddInfoIS(req.Context(), *infRepo)
 		fmt.Println(id, err)
 		if err != nil {
@@ -52,6 +58,7 @@ func AddISInfo(service StorageInfo) http.Handler {
 			return
 		}
 
+		// Prepare the response JSON with the added IS information details
 		resp := &model.TableInfSystems{
 			ID:                 id,
 			Name:               unm.Name,
@@ -68,6 +75,8 @@ func AddISInfo(service StorageInfo) http.Handler {
 			Status:             unm.Status,
 		}
 		infJson, _ := json.Marshal(resp)
+
+		// Write the JSON response
 		_, err = w.Write(infJson)
 		if err != nil {
 			return

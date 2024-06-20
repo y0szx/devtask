@@ -11,13 +11,17 @@ import (
 	"strconv"
 )
 
+// UpdateISInfo returns an HTTP handler that updates information system details in InfSys table.
 func UpdateISInfo(service StorageInfo) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
+		// Read the entire request body
 		body, err := io.ReadAll(req.Body)
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
+
+		// Extract key from request parameters
 		key, ok := mux.Vars(req)[QueryParamKey]
 		if !ok {
 			w.WriteHeader(http.StatusBadRequest)
@@ -29,6 +33,7 @@ func UpdateISInfo(service StorageInfo) http.Handler {
 			return
 		}
 
+		// Retrieve existing information system details
 		sysInfo, err := service.GetInfoIS(req.Context(), keyInt)
 		if err != nil {
 			if errors.Is(err, model.ErrObjectNotFound) {
@@ -39,6 +44,7 @@ func UpdateISInfo(service StorageInfo) http.Handler {
 			return
 		}
 
+		// Unmarshal the request body into TableInfSystems struct
 		var unm model.TableInfSystems
 		unm = *sysInfo
 		if err = json.Unmarshal(body, &unm); err != nil {
@@ -46,6 +52,8 @@ func UpdateISInfo(service StorageInfo) http.Handler {
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
+
+		// Prepare updated information system data
 		infRepo := &model.TableInfSystems{
 			Name:               unm.Name,
 			Owner:              unm.Owner,
@@ -60,6 +68,8 @@ func UpdateISInfo(service StorageInfo) http.Handler {
 			ResourceAssignment: unm.ResourceAssignment,
 			Status:             unm.Status,
 		}
+
+		// Update information system details using service
 		id, err := service.UpdateInfoIS(req.Context(), infRepo, keyInt)
 		if err != nil {
 			if errors.Is(err, model.ErrNoRowsInResultSet) {
@@ -70,6 +80,7 @@ func UpdateISInfo(service StorageInfo) http.Handler {
 			return
 		}
 
+		// Prepare response with updated information system details
 		resp := &model.TableInfSystems{
 			ID:                 id,
 			Name:               unm.Name,

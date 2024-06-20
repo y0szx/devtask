@@ -9,8 +9,10 @@ import (
 	"strconv"
 )
 
+// GetByID returns an HTTP handler that retrieves information of IS by ID from ListInfSys table.
 func GetByID(service StorageInfo) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
+		// Extract key from URL path parameters
 		key, ok := mux.Vars(req)[QueryParamKey]
 		if !ok {
 			w.WriteHeader(http.StatusBadRequest)
@@ -22,8 +24,10 @@ func GetByID(service StorageInfo) http.Handler {
 			return
 		}
 
+		// Retrieve system information by ID using the service
 		sysInfo, err := service.GetInfo(req.Context(), keyInt)
 		if err != nil {
+			// Handle specific error cases
 			if errors.Is(err, model.ErrObjectNotFound) {
 				w.WriteHeader(http.StatusNotFound)
 				return
@@ -31,6 +35,8 @@ func GetByID(service StorageInfo) http.Handler {
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
+
+		// Serialize the system information to JSON
 		infJson, _ := json.Marshal(sysInfo)
 		_, err = w.Write(infJson)
 		if err != nil {
