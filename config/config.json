@@ -1,9 +1,0 @@
-{
-  "AUTH_PASSWORD": "admin",
-  "AUTH_USERNAME": "admin",
-  "DB_HOST": "localhost",
-  "DB_NAME": "test",
-  "DB_PASSWORD": "test",
-  "DB_PORT": "5432",
-  "DB_USER": "test"
-}
