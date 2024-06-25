@@ -3,7 +3,6 @@ package handlers
 import (
 	"devtask/internal/model"
 	"encoding/json"
-	"fmt"
 	"github.com/gorilla/mux"
 	"net/http"
 	"strconv"
@@ -43,7 +42,6 @@ func AddImage(service StorageInfo) http.Handler {
 
 		// Call the service to add the image
 		image_id, err := service.AddImg(req.Context(), *image)
-		fmt.Println(image_id, err)
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 			return

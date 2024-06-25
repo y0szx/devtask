@@ -9,6 +9,12 @@ import (
 // BasicAuth is a middleware function that enforces basic authentication using a provided username and password.
 func BasicAuth(next http.Handler, expectedUsername string, expectedPassword string) http.HandlerFunc {
 	return func(w http.ResponseWriter, req *http.Request) {
+		// Allow unauthenticated access to GET requests
+		if req.Method == http.MethodGet {
+			next.ServeHTTP(w, req)
+			return
+		}
+
 		// Retrieve the username and password from the request's Basic Authentication header
 		username, password, ok := req.BasicAuth()
 

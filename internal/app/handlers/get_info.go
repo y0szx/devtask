@@ -35,7 +35,7 @@ func GetISTable(service StorageInfo) http.Handler {
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
-		
+
 		// Serialize the information system to JSON
 		infJson, _ := json.Marshal(sysInfo)
 		_, err = w.Write(infJson)

@@ -3,7 +3,6 @@ package handlers
 import (
 	"devtask/internal/model"
 	"encoding/json"
-	"fmt"
 	"github.com/gorilla/mux"
 	"net/http"
 	"strconv"
@@ -52,7 +51,6 @@ func AddISInfo(service StorageInfo) http.Handler {
 
 		// Call the service to add the IS information
 		id, err := service.AddInfoIS(req.Context(), *infRepo)
-		fmt.Println(id, err)
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 			return

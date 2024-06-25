@@ -4,7 +4,6 @@ import (
 	"devtask/internal/model"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"github.com/gorilla/mux"
 	"io"
 	"net/http"
@@ -50,7 +49,6 @@ func Update(service StorageInfo) http.Handler {
 			Contacts: sysInfo.Contacts,
 		}
 		if err = json.Unmarshal(body, &unm); err != nil {
-			fmt.Println(err)
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}

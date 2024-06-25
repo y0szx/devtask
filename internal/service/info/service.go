@@ -3,7 +3,6 @@ package info
 import (
 	"context"
 	"devtask/internal/model"
-	"fmt"
 )
 
 // storageInfo interface defines the methods for interacting with the storage layer
@@ -55,7 +54,6 @@ func (s Service) UpdateInfo(ctx context.Context, inf *model.ListInfSys, id int64
 // DeleteInfo deletes a ListInfSys record by ID
 func (s Service) DeleteInfo(ctx context.Context, id int64) error {
 	err := s.storage.Delete(ctx, id)
-	fmt.Println(err)
 	return err
 }
 
@@ -68,7 +66,6 @@ func (s Service) ListInfo(ctx context.Context) ([]model.ListInfSys, error) {
 // GetInfoIS retrieves a TableInfSystems record by ID
 func (s Service) GetInfoIS(ctx context.Context, id int64) (*model.TableInfSystems, error) {
 	inf, err := s.storage.GetISTable(ctx, id)
-	fmt.Println(err)
 	return inf, err
 }
 
@@ -87,7 +84,6 @@ func (s Service) UpdateInfoIS(ctx context.Context, inf *model.TableInfSystems, i
 // GetImg retrieves all Images records by ID
 func (s Service) GetImg(ctx context.Context, id int64) ([]model.Images, error) {
 	inf, err := s.storage.GetImages(ctx, id)
-	fmt.Println(err)
 	return inf, err
 }
 
@@ -100,7 +96,6 @@ func (s Service) AddImg(ctx context.Context, inf model.Images) (int64, error) {
 // GetDocs retrieves all Documents records by ID
 func (s Service) GetDocs(ctx context.Context, id int64) ([]model.Documents, error) {
 	inf, err := s.storage.GetDocuments(ctx, id)
-	fmt.Println(err)
 	return inf, err
 }
 

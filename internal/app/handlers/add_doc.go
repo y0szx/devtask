@@ -3,7 +3,6 @@ package handlers
 import (
 	"devtask/internal/model"
 	"encoding/json"
-	"fmt"
 	"github.com/gorilla/mux"
 	"net/http"
 	"strconv"
@@ -41,8 +40,7 @@ func AddDocument(service StorageInfo) http.Handler {
 		}
 
 		// Call the service to add the document
-		id, err := service.AddDoc(req.Context(), *doc)
-		fmt.Println(id, err)
+		_, err = service.AddDoc(req.Context(), *doc)
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 			return

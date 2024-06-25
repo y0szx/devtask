@@ -5,7 +5,6 @@ import (
 	"devtask/internal/model"
 	"devtask/internal/pkg/db"
 	"errors"
-	"fmt"
 	"github.com/jackc/pgx/v4"
 )
 
@@ -23,7 +22,6 @@ func NewInfo(database *db.Database) *InfRepo {
 func (r *InfRepo) AddToList(ctx context.Context, inf *model.ListInfSys) (int64, error) {
 	var id int64
 	err := r.db.ExecQueryRow(ctx, `INSERT INTO listinfsys(name,owner,admin,contacts) VALUES ($1,$2, $3, $4) RETURNING id;`, inf.Name, inf.Owner, inf.Admin, inf.Contacts).Scan(&id)
-	fmt.Println(err)
 	return id, err
 }
 
@@ -104,7 +102,6 @@ func (r *InfRepo) AddISInfo(ctx context.Context, inf *model.TableInfSystems) (in
 // UpdateISInfo updates an existing record in the infsys table by ID
 func (r *InfRepo) UpdateISInfo(ctx context.Context, inf *model.TableInfSystems, id int64) (int64, error) {
 	cT, err := r.db.Exec(ctx, `UPDATE infsys SET name=$1, owner=$2, vms=$3, cpu=$4, ram=$5, hdd=$6, software_used=$7, admin_name=$8, admin_email=$9, admin_tg=$10, resource_assignment=$11, status=$12 WHERE id=$13;`, inf.Name, inf.Owner, inf.Vms, inf.Cpu, inf.Ram, inf.Hdd, inf.SoftwareUsed, inf.AdminName, inf.AdminEmail, inf.AdminTg, inf.ResourceAssignment, inf.Status, id)
-	fmt.Println(cT, err)
 	if cT.RowsAffected() == 0 {
 		return 0, model.ErrNoRowsInResultSet
 	}

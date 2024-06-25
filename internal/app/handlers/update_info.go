@@ -4,7 +4,6 @@ import (
 	"devtask/internal/model"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"github.com/gorilla/mux"
 	"io"
 	"net/http"
@@ -48,7 +47,6 @@ func UpdateISInfo(service StorageInfo) http.Handler {
 		var unm model.TableInfSystems
 		unm = *sysInfo
 		if err = json.Unmarshal(body, &unm); err != nil {
-			fmt.Println(err)
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}

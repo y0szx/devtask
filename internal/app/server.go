@@ -48,6 +48,8 @@ func RunHTTP(_ context.Context, service *info.Service, auth config.AuthInfo) {
 		}
 	}()
 
+	fmt.Println("Сервер запущен!")
+
 	// Wait for termination signal
 	<-quit
 
