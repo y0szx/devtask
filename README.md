@@ -1,25 +1,38 @@
-To add IS to the list of IS, send POST request within the route `localhost:9000` with the following content:
+### 1
 
-```
-{"name": "inno", "owner": "fio", "admin": "admin", "contacts": "contact"}
-```
+Создать базу данных с помощью Docker:
 
-It will assign an ID to the entry and corresponding fields that you specify. 
-
-To add info about certain IS, navigate to the desired IS id (e.g. `localhost:9000/1/info`) and send POST request with the following content
-
-```
-{"name": "name", "owner": "owner", "vms": "vms", "cpu": 2, "ram": 128, "hdd": "128mb", "softwareused": "softwareused", "adminname": "adminname", "adminemail": "adminemail", "admintg": "admintg", "resourceassignment": "resourceassignment", "status": true}
+```bash
+docker-compose up -d
 ```
 
-To update the info about informational system in the list with all systems navigate to the desired IS id (e.g. `localhost:9000/1`) and send PUT request with the feild you want to update:
+или вручную:
 
+```bash
+sudo apt update
+sudo apt install postgresql postgresql-contrib
+
+sudo systemctl start postgresql
+sudo systemctl enable postgresql
+
+sudo -i -u postgres
+
+psql
+
+CREATE DATABASE test;
+CREATE USER test WITH PASSWORD 'test';
+GRANT ALL PRIVILEGES ON DATABASE test TO test;
+\q
 ```
-{"name": "infsys"}
+
+### 2
+
+```bash
+make test-migration-up
 ```
 
-To list all ISs send GET request to the route `localhost:9000`
+### 3
 
-To get full info about IS send GET request to the route with desired IS (e.g. `localhost:9000/1/info`)
-
-To delete IS send DELETE request to the desired route (e.g. `localhost:9000/1`). This will delete corresponding entries from `listinfsys` and `infsys` tables.
+```bash
+go run cmd/http-app/main.go
+```
